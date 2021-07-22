@@ -73,12 +73,12 @@ export const signUp = async (req: Request, res: Response, next: NextFunction) =>
         password: req.body.password
     });
 
-    User.findOne({ email: req.body.email }, (err, existingUser) => {
+    User.findOne({ email: req.body.email }, (err:Error, existingUser:any) => {
         if (err) { return next(err); }
         if (existingUser) {
             return res.status(400).send({ type: "errors", msg: "Account with that email address already exists." });
         }
-        user.save((err) => {
+        user.save((err:any) => {
             if (err) { return next(err); }
             req.logIn(user, (err) => {
                 if (err) {
@@ -106,14 +106,14 @@ export const updateProfile = async (req: Request, res: Response, next: NextFunct
     }
 
     const user = req.user as UserDocument;
-    User.findById(user.id, (err, user: UserDocument) => {
+    User.findById(user.id, (err:any, user: UserDocument) => {
         if (err) { return next(err); }
         user.email = req.body.email || "";
         user.profile.name = req.body.name || "";
         user.profile.gender = req.body.gender || "";
         user.profile.location = req.body.location || "";
         user.profile.website = req.body.website || "";
-        user.save((err: WriteError) => {
+        user.save((err: any, doc: UserDocument) => {
             if (err) {
                 if (err.code === 11000) {
                     res.status(400).send({ type: "errors", msg: "The email address you have entered is already associated with an account." });
@@ -140,10 +140,10 @@ export const updatePassword = async (req: Request, res: Response, next: NextFunc
     }
 
     const user = req.user as UserDocument;
-    User.findById(user.id, (err, user: UserDocument) => {
+    User.findById(user.id, (err:any, user: UserDocument) => {
         if (err) { return next(err); }
         user.password = req.body.password;
-        user.save((err: WriteError) => {
+        user.save((err: any, doc: UserDocument) => {
             if (err) { return next(err); }
             res.status(200).send({ type: "success", msg: "Password has been changed." });
         });
@@ -170,7 +170,7 @@ export const deleteAccount = (req: Request, res: Response, next: NextFunction) =
 export const getOauthUnlink = (req: Request, res: Response, next: NextFunction) => {
     const provider = req.params.provider;
     const user = req.user as UserDocument;
-    User.findById(user.id, (err, user: any) => {
+    User.findById(user.id, (err:any, user: any) => {
         if (err) { return next(err); }
         user[provider] = undefined;
         user.tokens = user.tokens.filter((token: AuthToken) => token.kind !== provider);
@@ -265,7 +265,7 @@ export const forgotPassword = async (req: Request, res: Response, next: NextFunc
             });
         },
         function setRandomToken(token: AuthToken, done: Function) {
-            User.findOne({ email: req.body.email }, (err, user: any) => {
+            User.findOne({ email: req.body.email }, (err:any, user: any) => {
                 if (err) { return done(err); }
                 if (!user) {
                     return res.status(200).send({ type: "errors", msg: "Account with that email address does not exist." });
@@ -295,7 +295,7 @@ export const forgotPassword = async (req: Request, res: Response, next: NextFunc
           If you did not request this, please ignore this email and your password will remain unchanged.\n`
             };
             transporter.sendMail(mailOptions, (err) => {
-                req.flash("info", { msg: `An e-mail has been sent to ${user.email} with further instructions.` });
+                // req.flash("info", { msg: `An e-mail has been sent to ${user.email} with further instructions.` });
                 done(err);
             });
         }

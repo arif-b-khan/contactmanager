@@ -4,13 +4,13 @@
     "description": "The three musketeers, all in one pack in the form of a boilerplate app",
     "homepage": "https://arif.bannehasan/contactmanager",
     "bugs": {
-      "url": "https://github.com/arif.bannehasan/contactmanager/issues",
-      "email": "arif.bannehasan@gmail.com"
+        "url": "https://github.com/arif.bannehasan/contactmanager/issues",
+        "email": "arif.bannehasan@gmail.com"
     },
     "license": "MIT",
     "repository": {
-      "type": "git",
-      "url": "https://github.com/arif.bannehasan/contactmanager.git"
+        "type": "git",
+        "url": "https://github.com/arif.bannehasan/contactmanager.git"
     },
     "scripts": {
         "prestart": "npm run docker-mongo",
@@ -32,6 +32,9 @@
         "debug": "nodemon --inspect=9229 dist/server.js",
         "serve-debug": "",
         "watch-debug": "concurrently \"npm run watch-ts\" \"npm run serve-debug\"",
+        "webpack-build": "node_modules/.bin/webpack --config ./config/webpack.config.js",
+        "webpack-build-watch": "node_modules/.bin/webpack --mode=development --watch --config ./config/webpack.config.js",
+        "webpack-debug": "node dist/compiled",
         "client-start": "react-scripts start",
         "client-build": "react-scripts build",
         "client-test": "react-scripts test",
@@ -49,6 +52,10 @@
         }
     },
     "dependencies": {
+        "@material-ui/core": "^4.8.3",
+        "@material-ui/icons": "^4.5.1",
+        "@material-ui/styles": "^4.8.2",
+        "@sentry/browser": "^5.11.0",
         "async": "^3.1.0",
         "bcrypt-nodejs": "^0.0.3",
         "bluebird": "^3.5.5",
@@ -62,23 +69,18 @@
         "express-session": "^1.16.2",
         "express-validator": "^6.2.0",
         "fbgraph": "^1.4.4",
+        "firebase": "^7.6.2",
         "lodash": "^4.17.15",
+        "lodash.camelcase": "^4.3.0",
         "lusca": "^1.6.1",
+        "mdi-material-ui": "^6.10.0",
+        "moment": "^2.24.0",
         "mongoose": "^5.7.5",
         "nodemailer": "^6.3.0",
         "passport": "^0.4.0",
         "passport-facebook": "^3.0.0",
         "passport-local": "^1.0.0",
         "pug": "^2.0.4",
-        "winston": "^3.2.1",
-        "@material-ui/core": "^4.8.3",
-        "@material-ui/icons": "^4.5.1",
-        "@material-ui/styles": "^4.8.2",
-        "@sentry/browser": "^5.11.0",
-        "firebase": "^7.6.2",
-        "lodash.camelcase": "^4.3.0",
-        "mdi-material-ui": "^6.10.0",
-        "moment": "^2.24.0",
         "react": "^16.12.0",
         "react-dom": "^16.12.0",
         "react-router-dom": "^5.1.2",
@@ -86,7 +88,8 @@
         "react-swipeable-views": "^0.13.1",
         "reading-time": "^1.1.3",
         "typeface-roboto": "^0.0.75",
-        "validate.js": "^0.13.1"
+        "validate.js": "^0.13.1",
+        "winston": "^3.2.1"
     },
     "devDependencies": {
         "@types/async": "^3.0.2",
@@ -125,15 +128,19 @@
         "chai": "^4.2.0",
         "concurrently": "^5.0.0",
         "eslint": "^6.4.0",
+        "gh-pages": "^2.2.0",
         "jest": "^24.9.0",
         "node-sass": "^4.14.0",
         "nodemon": "^1.19.2",
+        "passport-google-oauth": "^2.0.0",
         "shelljs": "^0.8.3",
         "supertest": "^4.0.2",
         "ts-jest": "^24.1.0",
+        "ts-loader": "^4.4.2",
         "ts-node": "^8.4.1",
         "typescript": "^3.6.3",
-        "gh-pages": "^2.2.0"
+        "webpack": "^4.41.2",
+        "webpack-cli": "^4.7.2"
     },
     "private": true,
     "eslintConfig": {
