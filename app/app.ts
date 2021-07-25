@@ -9,6 +9,9 @@ import mongoose from "mongoose";
 import passport from "passport";
 import bluebird from "bluebird";
 import { MONGODB_URI, SESSION_SECRET } from "./util/secrets";
+import * as swagger from "swagger-express-ts";
+import {SwaggerDefinitionConstant} from "swagger-express-ts";
+
 
 const MongoStore = mongo(session);
 
@@ -16,13 +19,14 @@ const MongoStore = mongo(session);
 import userRoute from "./routes/user.route";
 import accountRoute from "./routes/account.route";
 
-import * as homeController from "./controllers/home";
+import HomeController from "./controllers/home"; 
 import * as apiController from "./controllers/api";
 import * as contactController from "./controllers/contact";
 
 
 // API keys and Passport configuration
 import * as passportConfig from "./config/passport";
+
 
 // Create Express server
 const app = express();
@@ -38,10 +42,14 @@ mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUni
     // process.exit();
 });
 
+
 // Express configuration
 app.set("port", process.env.PORT || 3000);
 // app.set("views", path.join(__dirname, "../views"));
 // app.set("view engine", "pug");
+
+
+
 app.use(compression());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -53,10 +61,30 @@ app.use(lusca.xssProtection(true));
 /**
  * Primary app routes.
  */
+var homeController = new HomeController();
 app.get("/", homeController.index);
 app.use("/api/user", userRoute);
 app.post("/api/contact", contactController.sendContact);
 app.use("/api/account", accountRoute);
+
+const router = express.Router();
+
+app.use( swagger.express(
+    {
+        definition : {
+            info : {
+                title : "Contact Manager" ,
+                version : "1.0"
+            } ,
+            externalDocs : {
+                url : "http://localhost:3000"
+            }
+        }
+    }
+) );
+
+app.use( '/api-docs/swagger', express.static( 'swagger' ) );
+app.use( '/api-docs/swagger/assets', express.static( 'node_modules/swagger-ui-dist' ) );
 
 /**
  * API examples routes.
