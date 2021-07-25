@@ -94,3 +94,6 @@ fabric.properties
 
 #ignore check in of environment file
 .env
+
+# ignore dist files
+./dist
