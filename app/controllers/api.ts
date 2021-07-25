@@ -14,11 +14,11 @@ export const getFacebook = (req: Request, res: Response, next: NextFunction) => 
     const user = req.user as UserDocument;
     const token = user.tokens.find((token: any) => token.kind === "facebook");
     graph.setAccessToken(token.accessToken);
-    graph.get(`${user.facebook}?fields=id,name,email,first_name,last_name,gender,link,locale,timezone`, (err: Error, results: graph.FacebookUser) => {
-        if (err) { return next(err); }
-        res.render("api/facebook", {
-            title: "Facebook API",
-            profile: results
-        });
-    });
+    // graph.get(`${user.facebook}?fields=id,name,email,first_name,last_name,gender,link,locale,timezone`, (err: Error, results: graph.FacebookUser) => {
+    //     if (err) { return next(err); }
+    //     res.render("api/facebook", {
+    //         title: "Facebook API",
+    //         profile: results
+    //     });
+    // });
 };
