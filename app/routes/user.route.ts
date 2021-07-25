@@ -9,6 +9,6 @@ router.route("/login").post(userController.postLogin);
 router.route("/logout").post(userController.logout);
 router.route("/forgot").post(userController.forgotPassword);
 router.route("/reset/:token").post(userController.resetPassword);
-router.route("/signup").post(userController.signUp);
+router.route("/signup").post(userController.UserControllerSignupInstance.signUp);
 
 export default router;

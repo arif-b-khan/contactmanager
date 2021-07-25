@@ -1,0 +1,24 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "npm",
+			"script": "webpack-build",
+			"group": "build",
+			"problemMatcher": [],
+			"label": "npm: webpack-build",
+			"detail": "node_modules/.bin/webpack --mode=development --config ./config/webpack.config.js"
+		},
+		{
+			"type": "npm",
+			"script": "webpack-build-watch",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"problemMatcher": [],
+			"label": "npm: webpack-build-watch",
+			"detail": "npm run clean && node_modules/.bin/webpack --mode=development --watch --progress --config ./config/webpack.config.js"
+		}
+	]
+}

@@ -7,6 +7,8 @@ import { Request, Response, NextFunction } from "express";
 import { IVerifyOptions } from "passport-local";
 import { WriteError } from "mongodb";
 import { check, sanitize, validationResult } from "express-validator";
+import { ApiOperationGet, ApiPath, SwaggerDefinitionConstant } from "swagger-express-ts";
+
 import "../config/passport";
 
 
@@ -51,44 +53,67 @@ export const logout = (req: Request, res: Response) => {
 };
 
 
-/**
- * POST /signup
- * Create a new local account.
- */
-export const signUp = async (req: Request, res: Response, next: NextFunction) => {
-    await check("email", "Email is not valid").isEmail().run(req);
-    await check("password", "Password must be at least 4 characters long").isLength({ min: 4 }).run(req);
-    await check("confirmPassword", "Passwords do not match").equals(req.body.password).run(req);
-    // eslint-disable-next-line @typescript-eslint/camelcase
-    await sanitize("email").normalizeEmail({ gmail_remove_dots: false }).run(req);
-
-    const errors = validationResult(req);
-
-    if (!errors.isEmpty()) {
-        return res.status(400).send({ type: "errors", errors: errors.array() });
-    }
-
-    const user = new User({
-        email: req.body.email,
-        password: req.body.password
-    });
-
-    User.findOne({ email: req.body.email }, (err:Error, existingUser:any) => {
-        if (err) { return next(err); }
-        if (existingUser) {
-            return res.status(400).send({ type: "errors", msg: "Account with that email address already exists." });
+@ApiPath({
+    path: "/user/signUp",
+    name: "SignUp",
+    security: { basicAuth: [] }
+})
+class UserControllerSignup {  
+    @ApiOperationGet({
+        description: "Signup a users",
+        summary: "Helps user signin to a page",
+        parameters: {
+            body: {
+                description: 'User',
+                model: 'User',
+                required: true,
+            },
+        },
+        responses: {
+            200: { description: "Success", type: SwaggerDefinitionConstant.Response.Type.ARRAY, model: "User" }
+        },
+        security: {
+            apiKeyHeader: []
         }
-        user.save((err:any) => {
+    })
+    public async signUp(req: Request, res: Response, next: NextFunction) {
+        await check("email", "Email is not valid").isEmail().run(req);
+        await check("password", "Password must be at least 4 characters long").isLength({ min: 4 }).run(req);
+        await check("confirmPassword", "Passwords do not match").equals(req.body.password).run(req);
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        await sanitize("email").normalizeEmail({ gmail_remove_dots: false }).run(req);
+
+        const errors = validationResult(req);
+
+        if (!errors.isEmpty()) {
+            return res.status(400); //.send({ type: "errors", errors: errors.array() });
+        }
+
+        const user = new User({
+            email: req.body.email,
+            password: req.body.password
+        });
+
+        User.findOne({ email: req.body.email }, (err: Error, existingUser: any) => {
             if (err) { return next(err); }
-            req.logIn(user, (err) => {
-                if (err) {
-                    return next(err);
-                }
-                res.status(200).send({ type: "success", msg: "User has been registered" });
+            if (existingUser) {
+                return res.status(400); //.send({ type: "errors", msg: "Account with that email address already exists." });
+            }
+            user.save((err: any) => {
+                if (err) { return next(err); }
+                req.logIn(user, (err) => {
+                    if (err) {
+                        return next(err);
+                    }
+                    res.status(200); //.send({ type: "success", msg: "User has been registered" });
+                });
             });
         });
-    });
-};
+    };
+
+}
+
+export const UserControllerSignupInstance = new UserControllerSignup();
 
 /**
  * POST /account/profile
@@ -106,7 +131,7 @@ export const updateProfile = async (req: Request, res: Response, next: NextFunct
     }
 
     const user = req.user as UserDocument;
-    User.findById(user.id, (err:any, user: UserDocument) => {
+    User.findById(user.id, (err: any, user: UserDocument) => {
         if (err) { return next(err); }
         user.email = req.body.email || "";
         user.profile.name = req.body.name || "";
@@ -140,7 +165,7 @@ export const updatePassword = async (req: Request, res: Response, next: NextFunc
     }
 
     const user = req.user as UserDocument;
-    User.findById(user.id, (err:any, user: UserDocument) => {
+    User.findById(user.id, (err: any, user: UserDocument) => {
         if (err) { return next(err); }
         user.password = req.body.password;
         user.save((err: any, doc: UserDocument) => {
@@ -170,7 +195,7 @@ export const deleteAccount = (req: Request, res: Response, next: NextFunction) =
 export const getOauthUnlink = (req: Request, res: Response, next: NextFunction) => {
     const provider = req.params.provider;
     const user = req.user as UserDocument;
-    User.findById(user.id, (err:any, user: any) => {
+    User.findById(user.id, (err: any, user: any) => {
         if (err) { return next(err); }
         user[provider] = undefined;
         user.tokens = user.tokens.filter((token: AuthToken) => token.kind !== provider);
@@ -265,7 +290,7 @@ export const forgotPassword = async (req: Request, res: Response, next: NextFunc
             });
         },
         function setRandomToken(token: AuthToken, done: Function) {
-            User.findOne({ email: req.body.email }, (err:any, user: any) => {
+            User.findOne({ email: req.body.email }, (err: any, user: any) => {
                 if (err) { return done(err); }
                 if (!user) {
                     return res.status(200).send({ type: "errors", msg: "Account with that email address does not exist." });

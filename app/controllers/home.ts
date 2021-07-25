@@ -22,7 +22,7 @@ export default class HomeController {
         description: "Get versions objects list",
         summary: "Get versions list",
         responses: {
-            200: { description: "Success", type: SwaggerDefinitionConstant.Response.Type.ARRAY, model: "Version" }
+            200: { description: "Success", type: SwaggerDefinitionConstant.Response.Type.ARRAY, model: "Person" }
         },
         security: {
             apiKeyHeader: []
