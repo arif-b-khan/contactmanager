@@ -46,7 +46,7 @@ app.use(compression());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(passport.initialize());
-app.use(passport.session());
+// app.use(passport.session());
 app.use(lusca.xframe("SAMEORIGIN"));
 app.use(lusca.xssProtection(true));
 
@@ -55,7 +55,7 @@ app.use(lusca.xssProtection(true));
  */
 app.get("/", homeController.index);
 app.use("/api/user", userRoute);
-app.post("/api/contact", contactController.sendContact);
+app.post("/api/contact", passport.authenticate('jwt', {session: false}), contactController.sendContact);
 app.use("/api/account", accountRoute);
 
 /**
