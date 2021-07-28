@@ -15,10 +15,10 @@ const MongoStore = mongo(session);
 // Controllers (route handlers)
 import userRoute from "./routes/user.route";
 import accountRoute from "./routes/account.route";
+import contactRoute from "./routes/contact.route";
 
 import * as homeController from "./controllers/home";
 import * as apiController from "./controllers/api";
-import * as contactController from "./controllers/contact";
 
 
 // API keys and Passport configuration
@@ -55,7 +55,8 @@ app.use(lusca.xssProtection(true));
  */
 app.get("/", homeController.index);
 app.use("/api/user", userRoute);
-app.post("/api/contact", passport.authenticate('jwt', {session: false}), contactController.sendContact);
+app.use("/api/contacts", passport.authenticate('jwt', {session: false})
+, contactRoute);
 app.use("/api/account", accountRoute);
 
 /**
