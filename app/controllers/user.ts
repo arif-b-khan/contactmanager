@@ -7,11 +7,16 @@ import { Request, Response, NextFunction } from "express";
 import { IVerifyOptions } from "passport-local";
 import { WriteError } from "mongodb";
 import { check, sanitize, validationResult } from "express-validator";
+import { SESSION_SECRET } from "../util/secrets";
+import * as jwt from "jsonwebtoken";
 import "../config/passport";
 
 
 export const getUser = async (req: Request, res: Response, next: NextFunction) => {
-    res.status(200).send({ message: "Welcome to user account" });
+    // User.find({}, (err:Error, users) => {
+    //     res.status(200).send({ ...users });
+    // });  
+    res.status(200).send(req.user);
 };
 
 /**
@@ -30,14 +35,21 @@ export const postLogin = async (req: Request, res: Response, next: NextFunction)
         return res.status(400).send({ type: "errors", errors: errors.array() });
     }
 
-    passport.authenticate("local", (err: Error, user: UserDocument, info: IVerifyOptions) => {
+    passport.authenticate("local", {session:false}, (err: Error, user: UserDocument, info: IVerifyOptions) => {
         if (err) { return next(err); }
         if (!user) {
             res.status(404).send({ type: "errors", msg: info.message });
         }
         req.logIn(user, (err) => {
             if (err) { return next(err); }
-            res.status(200).send({ type: "success", msg: "Success! You are logged in." });
+            let userinfo = {
+                id: user.id,
+                email: user.email
+            };
+            
+            const token = jwt.sign(userinfo, SESSION_SECRET);
+            res.status(200).send({userinfo, token});
+            // res.status(200).send({ type: "success", msg: "Success! You are logged in." });
         });
     })(req, res, next);
 };
@@ -48,6 +60,7 @@ export const postLogin = async (req: Request, res: Response, next: NextFunction)
  */
 export const logout = (req: Request, res: Response) => {
     req.logout();
+    return res.status(200).send("Logged out");
 };
 
 
