@@ -201,3 +201,6 @@ dist
 .tern-port
 # ignore dist files
 ./dist
+
+#ignore build folder
+./build

@@ -7,6 +7,8 @@ import app from "./app";
  */
 app.use(errorHandler());
 
+console.log(`Process port number: ${process.env.PORT}`);
+
 /**
  * Start Express server.
  */

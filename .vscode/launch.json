@@ -5,9 +5,25 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Launch Chrome",
+            "request": "launch",
+            "type": "pwa-chrome",
+            "url": "http://localhost:3000",
+            "webRoot": "${workspaceFolder}",
+            "sourceMaps": true,
+            "trace": true
+        },
+        {
+            "name": "Attach to Chrome",
+            "port": 9222,
+            "request": "attach",
+            "type": "pwa-chrome",
+            "webRoot": "${workspaceFolder}"
+        },
+        {
             "type": "node",
             "request": "attach",
-            "name": "Docker: Attach to Node",
+            "name": "Attach to Node",
             "protocol": "inspector",
             "port": 9229,
             "restart": true,
@@ -29,7 +45,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}/dist/server.js",
-            "preLaunchTask": "tsc: build - tsconfig.json",
+            "preLaunchTask": "npm: client-start",
             "outFiles": [
                 "${workspaceFolder}/dist/**/*.js"
             ]
@@ -62,7 +78,8 @@
             "preLaunchTask": null,
             "runtimeExecutable": "npm",
             "runtimeArgs": [
-                "run-script", "webpack-debug"
+                "run-script",
+                "webpack-debug"
             ],
             "env": {
                 "NODE_ENV": "development"

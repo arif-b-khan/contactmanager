@@ -1,13 +1,15 @@
 {
     "compilerOptions": {
+        "jsx": "react",
         "module": "commonjs",
         "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,
         "target": "es6",
         "noImplicitAny": true,
         "moduleResolution": "node",
+        "preserveConstEnums": true,
         "sourceMap": true,
-        "outDir": "dist",
+        "outDir": "build",
         "baseUrl": ".",
         "experimentalDecorators": true,
         "paths": {
@@ -18,6 +20,7 @@
         }
     },
     "include": [
-        "app/**/*"
+        "app/**/*",
+        "client/**/*"
     ]
 }
