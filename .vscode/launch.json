@@ -14,13 +14,6 @@
             "trace": true
         },
         {
-            "name": "Attach to Chrome",
-            "port": 9222,
-            "request": "attach",
-            "type": "pwa-chrome",
-            "webRoot": "${workspaceFolder}"
-        },
-        {
             "type": "node",
             "request": "attach",
             "name": "Attach to Node",
@@ -40,25 +33,12 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Launch Program",
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
-            "program": "${workspaceFolder}/dist/server.js",
-            "preLaunchTask": "npm: client-start",
-            "outFiles": [
-                "${workspaceFolder}/dist/**/*.js"
-            ]
-        },
-        {
-            "type": "node",
-            "request": "launch",
             "name": "Launch via NPM",
             "runtimeExecutable": "npm",
             "cwd": "${workspaceFolder}",
             "runtimeArgs": [
                 "run-script",
-                "webpack-debug"
+                "debug-server"
             ],
             "env": {
                 "NODE_ENV": "development"
@@ -69,23 +49,17 @@
             ]
         },
         {
+            "name": "Debug Jest Tests",
             "type": "node",
             "request": "launch",
-            "name": "Do not Use Launch Program",
-            "stopOnEntry": false,
-            "args": [],
-            "cwd": "${workspaceFolder}",
-            "preLaunchTask": null,
-            "runtimeExecutable": "npm",
             "runtimeArgs": [
-                "run-script",
-                "webpack-debug"
+              "--inspect-brk",
+              "${workspaceRoot}/node_modules/.bin/jest",
+              "--runInBand"
             ],
-            "env": {
-                "NODE_ENV": "development"
-            },
             "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
             "port": 9229
-        }
+          }
     ]
 }

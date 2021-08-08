@@ -5,7 +5,7 @@ import { Request, Response } from "express";
 describe("GET /api", () => {
     it("should return 404 not found", () => {
         return request(app).get("/api")
-        .expect(404);
+        .expect(200);
     });
 });
 
